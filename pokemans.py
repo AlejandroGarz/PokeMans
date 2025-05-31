@@ -21,10 +21,10 @@ def draw_soccer_field(best_pokemons_by_position):
     # Posiciones de los jugadores en el campo
     # Define las coordenadas de los jugadores en el campo
     player_coords = {
-        "Goalkeeper": [(5, 35)],
-        "Defender": [(20, 15), (20, 30), (20, 40), (20, 55)],
-        "Midfielder": [(50, 20), (50, 35), (50, 50)],
-        "Forward": [(80, 20), (80, 35), (80, 50)],
+        "Portero": [(5, 35)],
+        "Defensor": [(20, 15), (20, 30), (20, 40), (20, 55)],
+        "Mediocampista": [(50, 20), (50, 35), (50, 50)],
+        "Delantero": [(80, 20), (80, 35), (80, 50)],
     }
 
     # Dibuja los jugadores en el campo
@@ -93,30 +93,30 @@ def analyze_clusters(kmeans, df):
     
 
     # Define las métricas de puntuación para cada posición
-    def forward_score(row):
+    def Delantero_score(row):
         return (row["Attack"] * 0.6) + (row["Speed"] * 0.4)
 
-    def midfielder_score(row):
+    def Mediocampista_score(row):
         return (row["Sp. Atk"] * 0.5) + (row["Sp. Def"] * 0.5)
 
-    def defender_score(row):
+    def Defensor_score(row):
         return (row["Defense"] * 0.7) + (row["HP"] * 0.3)
 
     def goalkeeper_score(row):
         return (row["Sp. Def"] * 0.8) + (row["HP"] * 0.2)
 
     # Asigna posiciones basándose en la puntuación más alta
-    df["forward_score"] = df.apply(forward_score, axis=1)
-    df["midfielder_score"] = df.apply(midfielder_score, axis=1)
-    df["defender_score"] = df.apply(defender_score, axis=1)
+    df["Delantero_score"] = df.apply(Delantero_score, axis=1)
+    df["Mediocampista_score"] = df.apply(Mediocampista_score, axis=1)
+    df["Defensor_score"] = df.apply(Defensor_score, axis=1)
     df["goalkeeper_score"] = df.apply(goalkeeper_score, axis=1)
 
     def assign_position(row):
         scores = {
-            "Forward": row["forward_score"],
-            "Midfielder": row["midfielder_score"],
-            "Defender": row["defender_score"],
-            "Goalkeeper": row["goalkeeper_score"],
+            "Delantero": row["Delantero_score"],
+            "Mediocampista": row["Mediocampista_score"],
+            "Defensor": row["Defensor_score"],
+            "Portero": row["goalkeeper_score"],
         }
         return max(scores, key=scores.get)
 
@@ -131,10 +131,10 @@ def create_ui(df, pokemon_names, pokemon_df):
     # Pantalla principal con posiciones de fútbol clickeables
     position_options = ["Delantero", "Centrocampista", "Defensa", "Portero"]
     position_mapping = {
-        "Delantero": "Forward",
-        "Centrocampista": "Midfielder",
-        "Defensa": "Defender",
-        "Portero": "Goalkeeper",
+        "Delantero": "Delantero",
+        "Centrocampista": "Mediocampista",
+        "Defensa": "Defensor",
+        "Portero": "Portero",
     }
     position = st.selectbox(
         "Selecciona una Posición de Fútbol",
@@ -156,10 +156,10 @@ def create_ui(df, pokemon_names, pokemon_df):
         st.subheader("Los 10 mejores Pokemon")
         # Muestra los 10 mejores Pokemon para la posición seleccionada
         sort_columns = {
-            "Forward": "forward_score",
-            "Midfielder": "midfielder_score",
-            "Defender": "defender_score",
-            "Goalkeeper": "goalkeeper_score",
+            "Delantero": "Delantero_score",
+            "Mediocampista": "Mediocampista_score",
+            "Defensor": "Defensor_score",
+            "Portero": "goalkeeper_score",
         }
         sort_column = sort_columns[selected_position]
         top_10 = position_df.sort_values(sort_column, ascending=False).head(10)
@@ -175,10 +175,10 @@ def create_ui(df, pokemon_names, pokemon_df):
             # Gráfico de dispersión basado en la posición
             fig, ax = plt.subplots()
             scatter_columns = {
-                "Goalkeeper": {"x": "Sp. Def", "y": "Speed"},
-                "Defender": {"x": "Defense", "y": "HP"},
-                "Midfielder": {"x": "Sp. Atk", "y": "Speed"},
-                "Forward": {"x": "Attack", "y": "Speed"},
+                "Portero": {"x": "Sp. Def", "y": "Speed"},
+                "Defensor": {"x": "Defense", "y": "HP"},
+                "Mediocampista": {"x": "Sp. Atk", "y": "Speed"},
+                "Delantero": {"x": "Attack", "y": "Speed"},
             }
             x_data = position_df[scatter_columns[selected_position]["x"]]
             y_data = position_df[scatter_columns[selected_position]["y"]]
@@ -199,42 +199,42 @@ def create_ui(df, pokemon_names, pokemon_df):
 
     # Visualización de la cancha de fútbol
     st.header("Equipo Ideal")
-    st.subheader("Mejores Pokemones por Posición")
+    st.subheader("Mejores Pokémon por Posición")
 
     # Define las posiciones de los jugadores y sus estadísticas de Pokemon correspondientes
     positions = {
-        "Goalkeeper": "Goalkeeper",
-        "Defender": "Defender",
-        "Midfielder": "Midfielder",
-        "Forward": "Forward",
+        "Portero": "Portero",
+        "Defensor": "Defensor",
+        "Mediocampista": "Mediocampista",
+        "Delantero": "Delantero",
     }
 
     best_pokemons_by_position = {
-        "Goalkeeper": [],
-        "Defender": [],
-        "Midfielder": [],
-        "Forward": []
+        "Portero": [],
+        "Defensor": [],
+        "Mediocampista": [],
+        "Delantero": []
     }
     selected_pokemon_ids = set()
 
     # Define el número de jugadores para cada posición
     num_players = {
-        "Goalkeeper": 1,
-        "Defender": 4,
-        "Midfielder": 3,
-        "Forward": 3
+        "Portero": 1,
+        "Defensor": 4,
+        "Mediocampista": 3,
+        "Delantero": 3
     }
 
     # Define las columnas de puntuación para cada posición
     score_columns = {
-        "Goalkeeper": "goalkeeper_score",
-        "Defender": "defender_score",
-        "Midfielder": "midfielder_score",
-        "Forward": "forward_score",
+        "Portero": "goalkeeper_score",
+        "Defensor": "Defensor_score",
+        "Mediocampista": "Mediocampista_score",
+        "Delantero": "Delantero_score",
     }
 
     # Itera a través de las posiciones y selecciona Pokemon únicos
-    for pos_value in ["Goalkeeper", "Defender", "Midfielder", "Forward"]:
+    for pos_value in ["Portero", "Defensor", "Mediocampista", "Delantero"]:
         current_position_candidates = df[df["position"] == pos_value].copy()
         current_position_candidates = current_position_candidates.sort_values(
             score_columns[pos_value], ascending=False
