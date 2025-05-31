@@ -77,18 +77,6 @@ def analyze_clusters(kmeans, df):
     # Agrega las etiquetas de los clusters al DataFrame
     df["cluster"] = labels
 
-    # Selecciona solo las columnas numéricas para calcular las estadísticas medias
-    numerical_cols = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
-    cluster_means = df.groupby("cluster")[numerical_cols].mean()
-
-    # Asigna clusters a posiciones de fútbo
-    position_map = {
-        0: "Delantero",
-        1: "Centrocampista",
-        2: "Defensa",
-        3: "Portero",
-    }
-
     # Asigna clusters a posiciones de fútbol basándose en las medias de los clusters
     
 
@@ -125,7 +113,7 @@ def analyze_clusters(kmeans, df):
     return df
 
 # Crea la interfaz de usuario de Streamlit
-def create_ui(df, pokemon_names, pokemon_df):
+def create_ui(df):
     st.title("Selector de Equipo de Fútbol de Pokemon")
 
     # Pantalla principal con posiciones de fútbol clickeables
@@ -201,13 +189,6 @@ def create_ui(df, pokemon_names, pokemon_df):
     st.header("Equipo Ideal")
     st.subheader("Mejores Pokémon por Posición")
 
-    # Define las posiciones de los jugadores y sus estadísticas de Pokemon correspondientes
-    positions = {
-        "Portero": "Portero",
-        "Defensor": "Defensor",
-        "Mediocampista": "Mediocampista",
-        "Delantero": "Delantero",
-    }
 
     best_pokemons_by_position = {
         "Portero": [],
@@ -269,4 +250,4 @@ if __name__ == "__main__":
     df = analyze_clusters(kmeans, df)
 
     # Crea la UI
-    create_ui(df, pokemon_names, pokemon_df)
+    create_ui(df)
