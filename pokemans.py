@@ -91,7 +91,7 @@ def analyze_clusters(kmeans, df):
         return (row["Defense"] * 0.7) + (row["HP"] * 0.3)
 
     def goalkeeper_score(row):
-        return (row["Sp. Def"] * 0.8) + (row["HP"] * 0.2)
+        return (row["Sp. Def"] * 0.8) + (row["Speed"] * 0.2)
 
     # Asigna posiciones basándose en la puntuación más alta
     df["Delantero_score"] = df.apply(Delantero_score, axis=1)
